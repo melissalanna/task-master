@@ -15,13 +15,11 @@ class TaskPresenter {
         try {
             $tasks = $this->model->getAll();
 
-            // Transforma os títulos em maiúsculo
             foreach ($tasks as &$task) {
                 $task['title'] = strtoupper($task['title']);
             }
             unset($task);
 
-            // Envia as tarefas para a View
             $this->view->displayTasks($tasks);
 
         } catch (Exception $e) {
@@ -29,9 +27,9 @@ class TaskPresenter {
         }
     }
 
-    public function create($title, $description, $dueDate) {
+    public function create($title, $description, $responsible, $dueDate) {
         try {
-            $this->model->save($title, $description, $dueDate);
+            $this->model->save($title, $description, $responsible, $dueDate);
             header("Location: index.php");
         } catch (Exception $e) {
             $this->view->showError($e->getMessage());
@@ -47,5 +45,4 @@ class TaskPresenter {
         $this->model->delete($id);
         header("Location: index.php");
     }
-
 }

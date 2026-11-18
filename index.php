@@ -1,7 +1,6 @@
 
 <?php
 
-// Autoload atualizado para incluir Presenter
 spl_autoload_register(function ($class) {
     $dirs = ['Model', 'Presenter', 'View'];
 
@@ -14,16 +13,27 @@ spl_autoload_register(function ($class) {
     }
 });
 
-$pdo = new PDO('sqlite:' . __DIR__ . '/tasks.sqlite');
+// Conexão com o banco SQLite
+$databasePath = __DIR__ . '/tasks.sqlite';
+
+$pdo = new PDO('sqlite:' . $databasePath);
 $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-// 1. Instanciamos o Model
+// Criação automática da tabela
+$pdo->exec("
+    CREATE TABLE IF NOT EXISTS tasks (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        title TEXT NOT NULL,
+        description TEXT,
+        due_date TEXT NOT NULL,
+        responsible TEXT NOT NULL,
+        done INTEGER DEFAULT 0
+    )
+");
+
+// Instanciação do MVP
 $model = new Task($pdo);
-
-// 2. Instanciamos a View
 $view = new TaskHtmlView();
-
-// 3. Instanciamos o Presenter
 $presenter = new TaskPresenter($model, $view);
 
 // Roteamento
@@ -33,14 +43,15 @@ if ($action === 'create') {
     $presenter->create(
         $_POST['title'] ?? '',
         $_POST['description'] ?? '',
+        $_POST['responsible'] ?? '',
         $_POST['due_date'] ?? ''
     );
 
 } elseif ($action === 'complete') {
-    $presenter->complete($_GET['id']);
+    $presenter->complete($_GET['id'] ?? 0);
 
 } elseif ($action === 'delete') {
-    $presenter->delete($_GET['id']);
+    $presenter->delete($_GET['id'] ?? 0);
 
 } else {
     $presenter->index();
