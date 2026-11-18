@@ -1,123 +1,265 @@
 
+<?php
+
+$escape = static function ($value): string {
+    return htmlspecialchars((string) $value, ENT_QUOTES, 'UTF-8');
+};
+
+?>
+
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
-    <title>Task Master MVC</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Master - MVP</title>
 
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f4f6f9;
-            margin: 0;
-            padding: 30px;
-        }
-
-        .container {
-            max-width: 750px;
-            margin: auto;
-            background: white;
-            padding: 25px;
-            border-radius: 10px;
-        }
-
-        h1 {
-            color: #2563eb;
-            text-align: center;
-        }
-
-        input, button {
-            width: 100%;
-            padding: 10px;
-            margin: 6px 0;
+        * {
             box-sizing: border-box;
         }
 
-        button {
-            background: #2563eb;
-            color: white;
-            border: none;
-            cursor: pointer;
+        body {
+            font-family: 'Segoe UI', Arial, sans-serif;
+            background: #f3f4f6;
+            color: #333;
+            display: flex;
+            justify-content: center;
+            padding: 30px 15px;
+            margin: 0;
         }
 
-        li {
-            background: #f1f5f9;
-            padding: 15px;
-            margin: 10px 0;
-            list-style: none;
-            border-radius: 6px;
+        .container {
+            background: #fff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            width: 100%;
+            max-width: 600px;
         }
 
-        .done {
-            opacity: 0.6;
-            text-decoration: line-through;
+        h1 {
+            text-align: center;
+            border-bottom: 2px solid #eee;
+            padding-bottom: 15px;
         }
 
         .error {
-            color: red;
-            margin: 10px 0;
+            color: #991b1b;
+            background: #fee2e2;
+            padding: 12px;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+
+        .form-group {
+            margin: 15px 0;
+        }
+
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 6px;
+        }
+
+        input, textarea {
+            width: 100%;
+            padding: 11px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-family: inherit;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #2563eb;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+
+        button:hover {
+            background: #1d4ed8;
+        }
+
+        h2 {
+            margin-top: 30px;
+        }
+
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        li {
+            padding: 15px 0;
+            border-bottom: 1px solid #eee;
+            display: flex;
+            justify-content: space-between;
+            gap: 15px;
+        }
+
+        .task-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .task-title {
+            font-weight: bold;
+            font-size: 1.05rem;
+        }
+
+        .task-description {
+            color: #666;
+            margin-top: 6px;
+            overflow-wrap: anywhere;
+        }
+
+        .task-details {
+            font-size: 0.9rem;
+            color: #555;
+            margin-top: 8px;
+            line-height: 1.7;
+        }
+
+        li.done .task-title {
+            text-decoration: line-through;
+            color: #999;
+        }
+
+        .actions {
+            white-space: nowrap;
         }
 
         .actions a {
-            margin-right: 10px;
             text-decoration: none;
+            margin-left: 5px;
+        }
+
+        .empty {
+            text-align: center;
+            color: #777;
         }
     </style>
 </head>
 
 <body>
+
 <div class="container">
 
-    <h1>Task Master (MVC Edition)</h1>
+    <h1>Task Master</h1>
 
-    <?php if (isset($error)): ?>
+    <?php if (!empty($error)): ?>
         <div class="error">
-            <?php echo htmlspecialchars($error); ?>
+            <?= $escape($error) ?>
         </div>
     <?php endif; ?>
 
     <form method="POST" action="index.php?action=create">
-        <input type="text" name="title" placeholder="Título" required>
 
-        <input type="text" name="description" placeholder="Descrição">
+        <div class="form-group">
+            <label for="title">Título da tarefa *</label>
+            <input type="text" id="title" name="title"
+                   placeholder="O que precisa ser feito?" required>
+        </div>
 
-        <input type="date" name="due_date" required>
+        <div class="form-group">
+            <label for="description">Descrição (opcional)</label>
+            <textarea id="description" name="description"
+                      placeholder="Descreva os detalhes da tarefa..."></textarea>
+        </div>
 
-        <input type="text" name="responsible" placeholder="Responsável" required>
+        <div class="form-group">
+            <label for="due_date">Data de vencimento *</label>
+            <input type="date" id="due_date" name="due_date" required>
+        </div>
+
+        <div class="form-group">
+            <label for="responsible">Responsável *</label>
+            <input type="text" id="responsible" name="responsible"
+                   placeholder="Nome do responsável" required>
+        </div>
 
         <button type="submit">Adicionar tarefa</button>
+
     </form>
 
+    <h2>Minhas tarefas</h2>
+
     <ul>
+
         <?php foreach ($tasks as $task): ?>
-            <li class="<?php echo $task['done'] ? 'done' : ''; ?>">
 
-                <strong>
-                    <?php echo htmlspecialchars($task['title']); ?>
-                </strong>
+            <li class="<?= !empty($task['done']) ? 'done' : '' ?>">
 
-                <br>
+                <div class="task-info">
 
-                <small>
-                    <?php echo htmlspecialchars($task['description'] ?? ''); ?>
-                    <br>
-                    Vence em: <?php echo htmlspecialchars($task['due_date']); ?>
-                    <br>
-                    Responsável: <?php echo htmlspecialchars($task['responsible'] ?? ''); ?>
-                </small>
+                    <div class="task-title">
+                        <?= $escape($task['title']) ?>
+                    </div>
 
-                <div class="actions">
-                    <?php if (!$task['done']): ?>
-                        <a href="index.php?action=complete&id=<?php echo $task['id']; ?>">✅ Concluir</a>
+                    <?php if (!empty($task['description'])): ?>
+                        <div class="task-description">
+                            <?= $escape($task['description']) ?>
+                        </div>
                     <?php endif; ?>
 
-                    <a href="index.php?action=delete&id=<?php echo $task['id']; ?>">❌ Excluir</a>
+                    <div class="task-details">
+
+                        <div>
+                            <strong>Vencimento:</strong>
+
+                            <?php
+                            $dueDate = $task['due_date'] ?? '';
+
+                            echo $dueDate !== ''
+                                ? date('d/m/Y', strtotime($dueDate))
+                                : 'Não informado';
+                            ?>
+                        </div>
+
+                        <div>
+                            <strong>Responsável:</strong>
+                            <?= $escape($task['responsible'] ?? 'Não informado') ?>
+                        </div>
+
+                    </div>
+
+                </div>
+
+                <div class="actions">
+
+                    <?php if (empty($task['done'])): ?>
+                        <a href="index.php?action=complete&id=<?= (int) $task['id'] ?>"
+                           title="Concluir tarefa">✅</a>
+                    <?php endif; ?>
+
+                    <a href="index.php?action=delete&id=<?= (int) $task['id'] ?>"
+                       onclick="return confirm('Deseja realmente excluir esta tarefa?');"
+                       title="Excluir tarefa">🗑️</a>
+
                 </div>
 
             </li>
+
         <?php endforeach; ?>
+
     </ul>
 
+    <?php if (empty($tasks)): ?>
+        <p class="empty">Nenhuma tarefa cadastrada.</p>
+    <?php endif; ?>
+
 </div>
+
 </body>
 </html>
