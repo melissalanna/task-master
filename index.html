@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Master - MVVM</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="js/TaskViewModel.js" defer></script>
+</head>
+<body>
+    <main class="container">
+        <header class="page-header">
+            <p class="eyebrow">ORGANIZAÇÃO PESSOAL</p>
+            <h1>Task Master</h1>
+            <p class="subtitle">Organize suas tarefas e acompanhe seu progresso.</p>
+        </header>
+
+        <section class="panel" aria-labelledby="form-title">
+            <h2 id="form-title">Nova tarefa</h2>
+            <form id="taskForm">
+                <div class="form-group">
+                    <label for="taskTitle">Título da tarefa *</label>
+                    <input type="text" id="taskTitle" name="title" placeholder="O que precisa ser feito?" required maxlength="150">
+                </div>
+                <div class="form-group">
+                    <label for="taskDescription">Descrição</label>
+                    <textarea id="taskDescription" name="description" placeholder="Detalhes da tarefa (opcional)" rows="3"></textarea>
+                </div>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="taskDueDate">Data de vencimento *</label>
+                        <input type="date" id="taskDueDate" name="due_date" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="taskResponsible">Responsável *</label>
+                        <input type="text" id="taskResponsible" name="responsible" placeholder="Nome do responsável" required maxlength="120">
+                    </div>
+                </div>
+                <button class="primary-button" id="addBtn" type="submit">Adicionar tarefa</button>
+            </form>
+            <p id="feedback" class="feedback" role="status" aria-live="polite"></p>
+        </section>
+
+        <section class="tasks-section" aria-labelledby="tasks-title">
+            <div class="section-heading">
+                <h2 id="tasks-title">Minhas tarefas</h2>
+                <span id="taskCount" class="task-count">0 tarefas</span>
+            </div>
+            <ul id="taskList" class="task-list" aria-live="polite">
+                <li class="empty-state">Carregando tarefas...</li>
+            </ul>
+        </section>
+        <footer>Task Master · Arquitetura MVVM</footer>
+    </main>
+</body>
+</html>
