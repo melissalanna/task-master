@@ -13,8 +13,7 @@ $escape = static function ($value): string {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>Task Master</title>
+    <title>Task Master - MVP</title>
 
     <style>
         * {
@@ -169,43 +168,25 @@ $escape = static function ($value): string {
 
         <div class="form-group">
             <label for="title">Título da tarefa *</label>
-            <input
-                type="text"
-                id="title"
-                name="title"
-                placeholder="O que precisa ser feito?"
-                required
-            >
+            <input type="text" id="title" name="title"
+                   placeholder="O que precisa ser feito?" required>
         </div>
 
         <div class="form-group">
             <label for="description">Descrição (opcional)</label>
-            <textarea
-                id="description"
-                name="description"
-                placeholder="Descreva os detalhes da tarefa..."
-            ></textarea>
+            <textarea id="description" name="description"
+                      placeholder="Descreva os detalhes da tarefa..."></textarea>
         </div>
 
         <div class="form-group">
             <label for="due_date">Data de vencimento *</label>
-            <input
-                type="date"
-                id="due_date"
-                name="due_date"
-                required
-            >
+            <input type="date" id="due_date" name="due_date" required>
         </div>
 
         <div class="form-group">
             <label for="responsible">Responsável *</label>
-            <input
-                type="text"
-                id="responsible"
-                name="responsible"
-                placeholder="Nome do responsável"
-                required
-            >
+            <input type="text" id="responsible" name="responsible"
+                   placeholder="Nome do responsável" required>
         </div>
 
         <button type="submit">Adicionar tarefa</button>
@@ -258,17 +239,13 @@ $escape = static function ($value): string {
                 <div class="actions">
 
                     <?php if (empty($task['done'])): ?>
-                        <a
-                            href="index.php?action=complete&id=<?= (int) $task['id'] ?>"
-                            title="Concluir tarefa"
-                        >✅</a>
+                        <a href="index.php?action=complete&id=<?= (int) $task['id'] ?>"
+                           title="Concluir tarefa">✅</a>
                     <?php endif; ?>
 
-                    <a
-                        href="index.php?action=delete&id=<?= (int) $task['id'] ?>"
-                        onclick="return confirm('Deseja realmente excluir esta tarefa?');"
-                        title="Excluir tarefa"
-                    >🗑️</a>
+                    <a href="index.php?action=delete&id=<?= (int) $task['id'] ?>"
+                       onclick="return confirm('Deseja realmente excluir esta tarefa?');"
+                       title="Excluir tarefa">🗑️</a>
 
                 </div>
 

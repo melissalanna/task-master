@@ -10,10 +10,6 @@ class TaskModelTest extends TestCase
     private PDO $pdo;
     private Task $taskModel;
 
-    /**
-     * Executado antes de cada teste.
-     * Cria um banco temporário na memória.
-     */
     protected function setUp(): void
     {
         $this->pdo = new PDO('sqlite::memory:');
@@ -26,9 +22,6 @@ class TaskModelTest extends TestCase
         $this->taskModel = new Task($this->pdo);
     }
 
-    /**
-     * Verifica se o sistema rejeita uma tarefa sem título.
-     */
     public function testNaoPermiteCadastrarTarefaSemTitulo(): void
     {
         $this->expectException(InvalidArgumentException::class);
@@ -45,9 +38,6 @@ class TaskModelTest extends TestCase
         );
     }
 
-    /**
-     * Verifica se uma tarefa é cadastrada corretamente.
-     */
     public function testCadastraUmaTarefaCorretamente(): void
     {
         $this->taskModel->save(
@@ -64,9 +54,6 @@ class TaskModelTest extends TestCase
         $this->assertSame('Responsável', $tasks[0]['responsible']);
     }
 
-    /**
-     * Verifica se uma tarefa pode ser concluída.
-     */
     public function testConcluiUmaTarefa(): void
     {
         $this->taskModel->save(
@@ -87,9 +74,6 @@ class TaskModelTest extends TestCase
         $this->assertSame(1, (int) $tasks[0]['done']);
     }
 
-    /**
-     * Verifica se uma tarefa pode ser excluída.
-     */
     public function testExcluiUmaTarefa(): void
     {
         $this->taskModel->save(

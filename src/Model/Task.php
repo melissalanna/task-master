@@ -8,13 +8,11 @@ class Task
     public function __construct(PDO $pdo)
     {
         $this->pdo = $pdo;
-
         $this->initializeDatabase();
     }
 
     /**
      * Cria a tabela e verifica se todas as colunas existem.
-     * Também permite utilizar bancos criados na Atividade 1.
      */
     private function initializeDatabase(): void
     {
